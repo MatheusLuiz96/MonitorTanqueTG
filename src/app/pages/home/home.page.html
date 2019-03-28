@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Monitoramento Tanque</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<ion-card>
+		<ion-card-header>
+			<ion-card-title>Medição Atual</ion-card-title>
+			<ion-card-subtitle>{{ medicaoAtual?.timestamp | date: 'HH:mm:ss dd/M/yyyy' }}</ion-card-subtitle>
+		</ion-card-header>
+		<ion-card-content>
+			<ion-grid no-padding>
+				<ion-row class="ion-align-items-center ion-justify-content-center">
+					<ion-col>
+						<div class="bowl">
+							<div class="oil" [style.height.%]="( medicaoAtual?.litros || 0) / (1024/100)">
+							</div>
+						</div>
+					</ion-col>
+					<ion-col>
+						<p class="litros_qtd">{{medicaoAtual?.litros || 0}}</p>
+						<p class="litros">Litros</p>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</ion-card-content>
+	</ion-card>
+	<ion-card>
+		<ion-card-header>
+			<ion-card-title>Próxima Medição</ion-card-title>
+			<ion-card-subtitle>{{ nextInsertTime | date: 'HH:mm:ss dd/M/yyyy' }}</ion-card-subtitle>
+		</ion-card-header>
+		<ion-card-content>
+			<div class="circle-wrap">
+				<div class="circle">
+
+					<div class="mask full" [ngStyle]="{'transform': 'rotate('+currentDegree+'deg)'}">
+					<div class="fill" [ngStyle]="{'transform': 'rotate('+currentDegree+'deg)'}"></div>
+					</div>
+					<div class="mask half">
+						<div class="fill" [ngStyle]="{'transform': 'rotate('+currentDegree+'deg)'}"></div>
+					</div>
+					<div class="inside-circle">
+						{{currentSecondsLeft || 0}}s
+					</div>
+				</div>
+			</div>
+		</ion-card-content>
+	</ion-card>
+</ion-content>

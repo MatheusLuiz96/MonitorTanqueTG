@@ -1,0 +1,7 @@
+{
+  "name": "monitoramentoTanque",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
