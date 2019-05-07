@@ -1,0 +1,66 @@
+#include <ESP8266WiFi.h>
+#include <FirebaseArduino.h>
+#include <FirebaseCloudMessaging.h>
+
+// Set these to run example.
+#define WIFI_SSID "Rede Wifi"
+#define WIFI_PASSWORD "Senha rede wifi"
+
+#define SERVER_KEY "servidor firebase"
+#define CLIENT_REGISTRATION_ID "ID de acesso ao servidro firebase"
+const int Potenciomento = 0;
+
+void setup() {
+  
+  Serial.begin(115200);
+  pinMode(13, OUTPUT);
+  pinMode(5, OUTPUT); 
+
+  // connect to wifi.
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    digitalWrite(5, HIGH);
+    delay(100);
+    digitalWrite(5, LOW);
+    delay(100);
+  }
+  Serial.println();
+  Serial.print("connected: ");
+  Serial.println(WiFi.localIP());
+
+  digitalWrite(5, HIGH);
+  
+  Firebase.begin(SERVER_KEY, CLIENT_REGISTRATION_ID);   
+  
+}
+
+void loop() {
+  
+  int valorPotenciometro = analogRead(Potenciomento);
+  Serial.println(valorPotenciometro);
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonObject& timeStampObject = jsonBuffer.createObject();
+  timeStampObject[".sv"] = "timestamp";
+  JsonObject& root = jsonBuffer.createObject();
+  root["timestamp"] = timeStampObject;
+  root["litros"] = valorPotenciometro;
+  
+  String name = Firebase.push("/sensor", root);
+  // handle error
+  if (Firebase.failed()) {
+     Serial.print("Firebase Pushing /sensor failed:");
+     Serial.println(Firebase.error());
+  }else{
+     Serial.print("Firebase Pushed /sensor ");
+     Serial.println(name);
+     digitalWrite(13, HIGH);
+     delay(4000);
+     digitalWrite(13, LOW);  
+          
+  }
+
+  delay(50000); // Espera 1800 segundos = 30 min
+  
+}
